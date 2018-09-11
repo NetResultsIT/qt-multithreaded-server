@@ -9,7 +9,7 @@
 
 #include "sslserver.h"
 #include "serverworker.h"
-#include "ext/tpool/nrthreadpool.h"
+#include "nrthreadpool.h"
 
 /*!
  * \brief The QMultiThreadedServer class
