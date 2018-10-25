@@ -1,5 +1,5 @@
-#ifndef _NR_MTHREAD_SRV_INC_
-#define _NR_MTHREAD_SRV_INC_
+#ifndef NR_MTHREAD_SRV_INCS
+#define NR_MTHREAD_SRV_INCS
 
 #include <QObject>
 #include <QMap>
@@ -59,7 +59,7 @@ public:
      * \param numberOfThreads the number of threads to be used to handle incoming connection, the default (0) will spawn a number of thread equal to the number
      * virtual cores present on the machine
      */
-    explicit QMultiThreadedServer(const NrServerConfig &i_rSrvConf, quint16 numberOfThreads=0, QObject*parent=NULL);
+    explicit QMultiThreadedServer(const NrServerConfig &i_rSrvConf, quint16 numberOfThreads=0, QObject*parent=nullptr);
     virtual ~QMultiThreadedServer();
 
     /*!

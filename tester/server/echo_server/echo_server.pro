@@ -9,14 +9,14 @@ CONFIG -= app_bundle
 
 TEMPLATE = app
 
-UNQLPATH=/home/franci/prog/uniqlogger/lib
-MTSPATH = ../../../src
 
-INCLUDEPATH += $$MTSPATH $$UNQLPATH/src
+!exists($$PWD/depspath.pri) : error("Cannot find depspath.pri file to choose echo_server deps: UniqLogger and Threadpool")
+include($$PWD/depspath.pri)
 
-!exists($$MTSPATH/mtserver.pri) : error("Cannot find Multi-threaded server .pri file")
-
-include($$MTSPATH/mtserver.pri)
+#Set the path for the multi-threaded server
+MTS_PATH = ../../../src
+!exists($$MTS_PATH/mtserver.pri) : error("Cannot find Multi-threaded server .pri file")
+include($$MTS_PATH/mtserver.pri)
 
 OBJECTS_DIR = build
 MOC_DIR = build

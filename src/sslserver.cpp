@@ -21,13 +21,13 @@ SslServer::listen(const QHostAddress &address, quint16 i_minPort, quint16 i_maxP
 {
     bool res = false;
 
-	for (quint16 i = i_minPort; i < i_maxPort; i++) {
+    for (quint16 i = i_minPort; i < i_maxPort; i++) {
         res = QTcpServer::listen(address, i);
-		if (res)
-			break;
-	}
+        if (res)
+            break;
+    }
 
-	return res;
+    return res;
 }
 
 
@@ -67,12 +67,12 @@ SslServer::incomingConnection(int socketDescriptor)
 #endif
 {
     //MTSDBG << "############### server reports ssl socket on descriptor: " << socketDescriptor;
-	QSslSocket *serverSocket = new QSslSocket;
+    QSslSocket *serverSocket = new QSslSocket;
     serverSocket->setProtocol(QSsl::AnyProtocol);
     
     MTSDBG << "using ssl socket at address " << serverSocket;
 
-	if (serverSocket->setSocketDescriptor(socketDescriptor)) {
+    if (serverSocket->setSocketDescriptor(socketDescriptor)) {
         MTSDBG << "Incoming connection from " << serverSocket->peerAddress().toString() << ":" << serverSocket->peerPort();
         MTSDBG << serverSocket;
         if (serverSocket->peerAddress().toString().isEmpty()) {
@@ -128,8 +128,7 @@ SslServer::incomingConnection(int socketDescriptor)
         m_sslSocketQ.enqueue(serverSocket);
 #endif
         emit connectedClient();
-	} else {
-
+    } else {
         *m_flogger << UNQL::LOG_CRITICAL << "Invalid set socket descriptor operation" << UNQL::eom;
         *m_clogger << UNQL::LOG_CRITICAL << "Invalid set socket descriptor operation" << UNQL::eom;
         qCritical() << "Could not set socket descriptor!!! ";
@@ -145,7 +144,7 @@ It can be used to handle just ssl connection or to handle generic connenctions w
 QSslSocket*
 SslServer::nextSslPendingConnection()
 {
-	return m_sslSocketQ.dequeue();
+    return m_sslSocketQ.dequeue();
 }
 #endif
 
@@ -165,7 +164,7 @@ void SslServer::ready()
 
 void SslServer::onSocketError(QAbstractSocket::SocketError e)
 {
-    QTcpSocket *sock = (QTcpSocket*) sender();
+    QTcpSocket *sock = dynamic_cast<QTcpSocket*>(sender());
     if (sock)
     {
         MTSDBG << "socket " << sock << " error " << e;
@@ -201,23 +200,23 @@ void SslServer::onSslErrors(QList<QSslError> aErrorList)
     QList<QSslError> errorsToIgnore;
 
     foreach (QSslError se, aErrorList) {
-		if (se != QSslError::NoError) {
+        if (se != QSslError::NoError) {
             MTSDBG << se.errorString();
-			*m_flogger << UNQL::LOG_CRITICAL << "Server reports SSL error: " << se.errorString() << UNQL::eom;
-			*m_clogger << UNQL::LOG_CRITICAL << "Server reports SSL error: " << se.errorString() << UNQL::eom;
+            *m_flogger << UNQL::LOG_CRITICAL << "Server reports SSL error: " << se.errorString() << UNQL::eom;
+            *m_clogger << UNQL::LOG_CRITICAL << "Server reports SSL error: " << se.errorString() << UNQL::eom;
             if (se.error() == QSslError::SelfSignedCertificate || se.error() == QSslError::SelfSignedCertificateInChain)
-			{
-				if (m_ServerConfig.allowUntrustedCerts) {
+            {
+                if (m_ServerConfig.allowUntrustedCerts) {
                     MTSDBG << "Cert is SelfSigned... but we're ok with that...";
-					*m_flogger << UNQL::LOG_INFO << "Client certificate is untrusted but we're ok with that" << UNQL::eom;
-					*m_clogger << UNQL::LOG_INFO << "Client certificate is untrusted but we're ok with that"  << UNQL::eom;
-					errorsToIgnore << se;
-				}
-			}
-		}
+                    *m_flogger << UNQL::LOG_INFO << "Client certificate is untrusted but we're ok with that" << UNQL::eom;
+                    *m_clogger << UNQL::LOG_INFO << "Client certificate is untrusted but we're ok with that"  << UNQL::eom;
+                    errorsToIgnore << se;
+                }
+            }
+        }
     }
 
-    QSslSocket *sslsock = (QSslSocket*) sender();
+    QSslSocket *sslsock = dynamic_cast<QSslSocket*>(sender());
     if (sslsock) {
         if (m_ServerConfig.ignoreSslErrors) {
             *m_flogger << UNQL::LOG_WARNING << "There were SSL errors but server is configured to ignore them all" << UNQL::eom;

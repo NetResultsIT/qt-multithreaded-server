@@ -43,7 +43,7 @@ public:
     explicit NrServerConfig()
         : serverAddress(QHostAddress::Any),
           serverPort(0),
-		  serverMinPort(1025),
+          serverMinPort(1025),
           serverMaxPort(65535),
           portBindingPolicy(E_BindUsingPortRange),
           passphrase("netresults_testcert_privkey"),
@@ -58,14 +58,14 @@ public:
 
 class SslServer : public QTcpServer
 {
-	Q_OBJECT
+    Q_OBJECT
 
     NrServerConfig m_ServerConfig;
-	QQueue<QSslSocket*> m_sslSocketQ;
+    QQueue<QSslSocket*> m_sslSocketQ;
     Logger *m_flogger, *m_clogger;
 
 public:
-    explicit SslServer(const NrServerConfig &cfg, QObject *parent = 0);
+    explicit SslServer(const NrServerConfig &cfg, QObject *parent = nullptr);
 
 #if QT_VERSION > 0x050000
     void incomingConnection(qintptr handle);
@@ -79,7 +79,7 @@ public:
     // just use QTcpServer::nextPendingConnection()
 #endif
 
-	bool listen(const QHostAddress &address, quint16 i_minPort, quint16 i_maxPort);
+    bool listen(const QHostAddress &address, quint16 i_minPort, quint16 i_maxPort);
     bool listen();
     bool listen(const QHostAddress &address, quint16 port=0);
 

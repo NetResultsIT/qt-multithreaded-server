@@ -6,23 +6,22 @@ contains(QT, gui): message("WARNING: building MTServer with QT GUI enabled! Are 
 CONFIG += c++11
 
 isEmpty(TPOOL_PATH) {
-    error("Thread Pool path not defined! Please define the TPOOL_PATH variable before including this file.")
+    error("NrThreadPool path not defined! Please define the TPOOL_PATH variable with the location of nrThreadPool.pri before including this file (mtserver.pri)")
 }
+include($$TPOOL_PATH/nrThreadPool.pri)
+
+!exists(sslserver.pri) : error("NrMultithreadedServer could not find mandatory sslserver.pri... aborting")
+include(sslserver.pri)
 
 INCLUDEPATH += $$PWD
-INCLUDEPATH += $$TPOOL_PATH/src/
 
 SOURCES += \
-    $$TPOOL_PATH/src/nrthreadpool.cpp \
     $$PWD/mthreadserver.cpp \
     $$PWD/mthreadserver.tpp \
-    $$PWD/serverworker.cpp \
-    $$PWD/sslserver.cpp
+    $$PWD/serverworker.cpp
 
 HEADERS += \
-    $$TPOOL_PATH/src/nrthreadpool.h \
     $$PWD/mthreadserver.h \
     $$PWD/serverworker.h \
-    $$PWD/sslserver.h \
     $$PWD/mtcommon.h
 
