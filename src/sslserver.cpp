@@ -15,6 +15,19 @@ SslServer::SslServer(const NrServerConfig &aSslConfig, QObject *parent) :
     m_clogger = ul->createConsoleLogger("SSL");
 }
 
+SslServer::~SslServer()
+{
+    if (m_flogger)
+    {
+        delete m_flogger;
+        m_flogger = nullptr;
+    }
+    if (m_clogger)
+    {
+        delete m_clogger;
+        m_clogger = nullptr;
+    }
+}
 
 bool
 SslServer::listen(const QHostAddress &address, quint16 i_minPort, quint16 i_maxPort)

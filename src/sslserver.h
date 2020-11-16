@@ -66,6 +66,7 @@ class SslServer : public QTcpServer
 
 public:
     explicit SslServer(const NrServerConfig &cfg, QObject *parent = nullptr);
+    ~SslServer();
 
 #if QT_VERSION > 0x050000
     void incomingConnection(qintptr handle);
