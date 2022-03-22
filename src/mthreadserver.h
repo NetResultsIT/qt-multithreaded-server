@@ -11,9 +11,9 @@
 #include "serverworker.h"
 #include "nrthreadpool.h"
 
+
 /*!
  * \brief The QMultiThreadedServer class
- *
  */
 class QMultiThreadedServer : public QObject
 {
@@ -26,9 +26,10 @@ class QMultiThreadedServer : public QObject
     QMap<QTcpSocket*, NrServerWorker*> m_Socket2WorkerPtrMap;
 
     QTimer *m_pTStampCheckerTimer;
-    int m_connectedClients;
-
     NRThreadPool *m_pTPool;
+    Logger *m_pLogger;
+
+    int m_connectedClients;
 
 private slots:
     void updateClientDataTimestamp();
@@ -53,39 +54,14 @@ protected slots:
     virtual void onClientConnectionEncrypted();
 
 public:
-    /*!
-     * \brief QMultiThreadedServer
-     * \param i_rSrvConf    [in] The mt server configuration
-     * \param numberOfThreads the number of threads to be used to handle incoming connection, the default (0) will spawn a number of thread equal to the number
-     * virtual cores present on the machine
-     */
-    explicit QMultiThreadedServer(const NrServerConfig &i_rSrvConf, quint16 numberOfThreads=0, QObject*parent=nullptr);
+    explicit QMultiThreadedServer(const NrServerConfig &i_rSrvConf, quint16 numberOfThreads=0, Logger*i_plog=nullptr, QObject*parent=nullptr);
     virtual ~QMultiThreadedServer();
 
-    /*!
-     * \brief connectedClients
-     * \return Returns the no. of connected clients
-     */
     int connectedClients();
-
-    /*!
-     * \brief Set the thread assignement policy of the thread pool
-     * \param i_threadAssignPolicy The new thread assignement policy.
-     */
     void setThreadAssignementPolicy(NRThreadPool::ThreadAssignmentPolicy i_threadAssignPolicy);
-
-    /*
-     *  Returns the map with the connection to thread allocation
-     */
     QMap<int, int> getConnectionStats();
 
 public slots:
-    /*!
-     * \brief listen
-     *   Start the server listening on the configured port
-     *   Before calling this method all connection to the mt server will be dropped/rejected
-     * \return  true on success; false otherwise
-     */
     bool listen();
 
 signals:
@@ -104,7 +80,7 @@ signals:
      */
     void clientRejected();
     /*!
-     * \brief clientRejected: @@FIXME
+     * \brief clientConnectionsExhausting: @@FIXME
      */
     void clientConnectionsExhausting(int);
 };
@@ -120,7 +96,8 @@ protected:
     NrServerWorker* getNewWorkerPointer(QTcpSocket*);
 public:
     explicit MultiThreadedServer(const NrServerConfig &srvconf,
-                                 QObject* parent=NULL,
+                                 Logger* i_pLogger=nullptr,
+                                 QObject* parent=nullptr,
                                  quint16 i_numberOfThreads=0);
     virtual ~MultiThreadedServer();
 };

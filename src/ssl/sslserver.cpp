@@ -10,17 +10,7 @@
 #define SSLLOGGER(x) if (Q_UNLIKELY(!x)) {} else *x
 #define SSLLOG SSLLOGGER(m_pLogger)
 #else
-namespace UNQL {
-const QString LOG_INFO = "";
-const QString LOG_WARNING = "";
-const QString LOG_CRITICAL = "";
-const QString eom = "";
-}
-class Logger {
-public:
-    Logger& operator<<(QString) { return *this; }
-    void setVerbosityAcceptedLevel(int) {}
-};
+#include "uniqlogger_replacement.h"
 #define SSLLOG qDebug()
 #endif
 

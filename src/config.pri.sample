@@ -1,8 +1,8 @@
 # Uncomment to enable console debug messages
-#DEFINES += SSLSERVER_DEBUG_ENABLED
+DEFINES += MTSERVER_DEBUG_ENABLED
 
 # Uncomment to disable UniqLogger usage (and set the path where to find it)
-#DEFINES += ENABLE_UNQL_USAGE_IN_SSLSERVER
+#DEFINES += ENABLE_UNQL_USAGE_IN_MTSERVER
 
 #NOTE: if you want to use UniqLogger with SslServer also define the path where to find it
 UNQLPATH=/Users/lamonica/prog/uniqlogger/lib/last_build

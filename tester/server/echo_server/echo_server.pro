@@ -9,10 +9,6 @@ CONFIG -= app_bundle
 
 TEMPLATE = app
 
-
-#!exists($$PWD/depspath.pri) : error("Cannot find depspath.pri file to choose echo_server deps: UniqLogger and Threadpool")
-#include($$PWD/depspath.pri)
-
 #Set the path for the multi-threaded server
 MTS_PATH = ../../../src
 !exists($$MTS_PATH/mtserver.pri) : error("Cannot find Multi-threaded server .pri file")

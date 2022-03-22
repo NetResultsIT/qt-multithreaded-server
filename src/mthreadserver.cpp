@@ -2,12 +2,28 @@
 
 #define MAX_INACTIVITY_MILLISECS 1000
 
-QMultiThreadedServer::QMultiThreadedServer(const NrServerConfig& i_rSrvConf, quint16 numberOfThreads, QObject* parent)
-    : QObject(parent),
-      m_connectedClients(0),
-      m_srvConf(i_rSrvConf)
+#ifdef ENABLE_UNQL_USAGE_IN_SSLSERVER
+#include "Logger.h"
+#define MTSLOGGER(x) if (Q_UNLIKELY(!x)) {} else *x
+#define MTSLOG MTSLOGGER(m_pLogger)
+#else
+#include "uniqlogger_replacement.h"
+#define MTSLOG qDebug()
+#endif
+
+/*!
+ * \brief QMultiThreadedServer
+ * \param i_rSrvConf    [in] The mt server configuration object
+ * \param numberOfThreads the number of threads to be used to handle incoming connection, the default (0) will spawn a number of thread equal to the number
+ * virtual cores present on the machine
+ */
+QMultiThreadedServer::QMultiThreadedServer(const NrServerConfig& i_rSrvConf, quint16 numberOfThreads, Logger*i_plog, QObject* parent)
+    : QObject(parent)
+    , m_pLogger(i_plog)
+    , m_connectedClients(0)
+    , m_srvConf(i_rSrvConf)
 {
-    m_pSslServer = new SslServer(i_rSrvConf, nullptr, this);
+    m_pSslServer = new SslServer(i_rSrvConf, i_plog, this);
     m_pTStampCheckerTimer = new QTimer(this);
     m_pTPool = new NRThreadPool(numberOfThreads, "MTSrvPool", this);
 
@@ -26,6 +42,10 @@ QMultiThreadedServer::~QMultiThreadedServer()
 }
 
 
+/*!
+ * \brief connectedClients
+ * \return Returns the number of connected clients
+ */
 int
 QMultiThreadedServer::connectedClients()
 {
@@ -38,15 +58,24 @@ QMultiThreadedServer::connectedClients()
     return cc;
 }
 
+
+/*!
+ * \brief Set the thread assignement policy of the thread pool
+ * \param i_threadAssignPolicy The new thread assignement policy.
+ */
 void QMultiThreadedServer::setThreadAssignementPolicy(NRThreadPool::ThreadAssignmentPolicy i_threadAssignPolicy)
 {
     m_pTPool->setPolicy(i_threadAssignPolicy);
 }
 
+/*!
+ *  \return Returns the map with the connection to thread allocation
+ */
 QMap<int, int> QMultiThreadedServer::getConnectionStats()
 {
     return m_pTPool->threadAllocationMap();
 }
+
 
 void
 QMultiThreadedServer::onClientConnectionEncrypted()
@@ -59,7 +88,7 @@ QMultiThreadedServer::onClientConnectionEncrypted()
         wo = m_Socket2WorkerPtrMap[sslsock];
     }
     else {
-        //FIXME - LOG
+        MTSLOG << UNQL::LOG_INFO << "new ssl client connected" << UNQL::EOM;
     }
     muxMap.unlock();
 
@@ -79,7 +108,7 @@ void
 QMultiThreadedServer::onNewClientConnection()
 {
     QTcpSocket *sock = m_pSslServer->nextPendingConnection();
-    qDebug() << Q_FUNC_INFO << "New connection:" << sock;
+    MTSLOG << UNQL::LOG_INFO << "New connection from " << sock->peerAddress().toString() << ":" << sock->peerPort() << UNQL::EOM;
 
     int cc;
     muxConnCount.lock();
@@ -114,16 +143,14 @@ QMultiThreadedServer::onNewClientConnection()
     }
     if (m_srvConf.disableEncryption == true) {
         connect(sock, SIGNAL(readyRead()), wo, SLOT(handleClientData()));
-    }
-    else {
+    } else {
         QSslSocket *ssock = dynamic_cast<QSslSocket*>(sock);
         if (ssock) {
             bool b = false;
             b = connect(ssock, SIGNAL(encrypted()), this, SLOT(onClientConnectionEncrypted()));
             Q_ASSERT(b); Q_UNUSED(b);
-        }
-        else {
-            //FIXME - LOG
+        } else {
+            MTSLOG << UNQL::LOG_ERROR << "Cannot find ssl socket that connected" << UNQL::EOM;
         }
     }
     /*
@@ -254,8 +281,13 @@ QMultiThreadedServer::checkClientInactivity()
 }
 
 
-bool
-QMultiThreadedServer::listen()
+/*!
+ * \brief listen
+ *   Start the server listening on the configured port
+ *   Before calling this method all connection to the mt server will be dropped/rejected
+ * \return  true on success; false otherwise
+ */
+bool QMultiThreadedServer::listen()
 {
     if (m_srvConf.allowedInactivitySeconds > 0)
     {
@@ -263,3 +295,4 @@ QMultiThreadedServer::listen()
     }
     return m_pSslServer->listen();
 }
+
