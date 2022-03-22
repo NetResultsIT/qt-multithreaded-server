@@ -7,7 +7,7 @@ QMultiThreadedServer::QMultiThreadedServer(const NrServerConfig& i_rSrvConf, qui
       m_connectedClients(0),
       m_srvConf(i_rSrvConf)
 {
-    m_pSslServer = new SslServer(i_rSrvConf, this);
+    m_pSslServer = new SslServer(i_rSrvConf, nullptr, this);
     m_pTStampCheckerTimer = new QTimer(this);
     m_pTPool = new NRThreadPool(numberOfThreads, "MTSrvPool", this);
 

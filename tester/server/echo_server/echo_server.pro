@@ -10,8 +10,8 @@ CONFIG -= app_bundle
 TEMPLATE = app
 
 
-!exists($$PWD/depspath.pri) : error("Cannot find depspath.pri file to choose echo_server deps: UniqLogger and Threadpool")
-include($$PWD/depspath.pri)
+#!exists($$PWD/depspath.pri) : error("Cannot find depspath.pri file to choose echo_server deps: UniqLogger and Threadpool")
+#include($$PWD/depspath.pri)
 
 #Set the path for the multi-threaded server
 MTS_PATH = ../../../src
@@ -29,4 +29,5 @@ HEADERS += \
     echoservertest.h \
     echoworker.h
 
-LIBS += -L$$UNQLPATH/last_build -lUniqLogger_d
+#if you compiled sslserver with unql support then uncomment the following line
+LIBS += -L$$UNQLPATH
