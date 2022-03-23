@@ -2,6 +2,8 @@
 
 #ifdef SSLSERVER_DEBUG_ENABLED
 #define SSLDBG qDebug()
+#else
+#define SSLDBG if (true) {} else qDebug()
 #endif
 
 #ifdef ENABLE_UNQL_USAGE_IN_SSLSERVER

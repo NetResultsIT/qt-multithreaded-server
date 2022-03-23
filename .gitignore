@@ -4,3 +4,4 @@ tester/*/build-*
 .DS_Store
 NrBinaries
 deps
+src/ext
