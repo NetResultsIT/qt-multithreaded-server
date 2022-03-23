@@ -2,7 +2,7 @@
 
 #define MAX_INACTIVITY_MILLISECS 1000
 
-#ifdef ENABLE_UNQL_USAGE_IN_SSLSERVER
+#ifdef ENABLE_UNQL_USAGE_IN_MTSERVER
 #include "Logger.h"
 #define MTSLOGGER(x) if (Q_UNLIKELY(!x)) {} else *x
 #define MTSLOG MTSLOGGER(m_pLogger)
