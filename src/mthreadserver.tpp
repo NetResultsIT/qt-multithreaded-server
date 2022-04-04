@@ -1,8 +1,9 @@
 template <class T>
 MultiThreadedServer<T>::MultiThreadedServer(const NrServerConfig &i_cfgRef,
+                                            Logger* i_pLogger,
                                             QObject* parent,
                                             quint16 i_numberOfThreads)
-    :QMultiThreadedServer(i_cfgRef, i_numberOfThreads, parent)
+    :QMultiThreadedServer(i_cfgRef, i_numberOfThreads, i_pLogger, parent)
 {
     /* This CTOR has been left intentionally blank */
 }

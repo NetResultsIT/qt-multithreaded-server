@@ -1,6 +1,0 @@
-#set uniqlogger path
-UNQLPATH=/home/franci/prog/uniqlogger/lib
-INCLUDEPATH += $$UNQLPATH/src
-
-#set threadpool set nrThreadPool.pri path
-TPOOL_PATH=/home/franci/prog/NrGitHub/tpool.git/src
