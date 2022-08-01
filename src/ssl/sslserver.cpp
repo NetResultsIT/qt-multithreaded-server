@@ -91,7 +91,7 @@ SslServer::incomingConnection(int socketDescriptor)
 {
     //MTSDBG << "############### server reports ssl socket on descriptor: " << socketDescriptor;
     QSslSocket *serverSocket = new QSslSocket;
-    serverSocket->setProtocol(QSsl::AnyProtocol);
+    serverSocket->setProtocol(QSsl::TlsV1_2OrLater);
 
     SSLDBG << "using ssl socket at address " << serverSocket;
 
