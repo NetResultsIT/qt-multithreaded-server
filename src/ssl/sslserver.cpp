@@ -34,7 +34,12 @@ SslServer::~SslServer()
 {
     if (m_pLogger)
     {
+#ifdef ENABLE_UNQL_USAGE_IN_SSLSERVER
+        m_pLogger->flush();
+        m_pLogger->deleteLater();
+#else
         delete m_pLogger;
+#endif
         m_pLogger = nullptr;
     }
 }
@@ -91,7 +96,7 @@ SslServer::incomingConnection(int socketDescriptor)
 {
     //MTSDBG << "############### server reports ssl socket on descriptor: " << socketDescriptor;
     QSslSocket *serverSocket = new QSslSocket;
-    serverSocket->setProtocol(QSsl::AnyProtocol);
+    serverSocket->setProtocol(QSsl::TlsV1_2OrLater);
 
     SSLDBG << "using ssl socket at address " << serverSocket;
 
