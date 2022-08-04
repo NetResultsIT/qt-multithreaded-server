@@ -99,10 +99,12 @@ QMultiThreadedServer::onClientConnectionEncrypted()
     if (sslsock->bytesAvailable() > 0 )
     {
         MTSDBG << "Data already available in the socket during connection: "<< QString::number(sslsock->bytesAvailable()) << " bytes";
-        //QTimer::singleShot(0, wo, SLOT(handleClientData()));
-        sslsock->readyRead();
+        /*
+         * we call the readyRead() signal to be sure that the associated call to
+         * the slot handleClientData() has the sender() set, as this is used by the wo workers objects
+         */
+        QTimer::singleShot(0, wo, SIGNAL(readyRead()));
     }
-
 }
 
 void
