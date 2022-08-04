@@ -18,6 +18,7 @@ EchoWorker::handleClientData()
     qDebug() << "Received client data: " << s;
     qDebug() << "Sending it back...";
     m_sock->write(s.toUtf8());
+    m_sock->flush();
 }
 
 int

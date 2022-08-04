@@ -1,3 +1,7 @@
 *.pro.user
 *depspath.pri
 tester/*/build-*
+.DS_Store
+NrBinaries
+deps
+src/ext

@@ -17,12 +17,18 @@ class EchoClient : public QObject
 public:
     explicit EchoClient(int id, QObject *parent = 0);
     ~EchoClient();
+    void go();
 
 signals:
     void clientfinished(int);
+    void startRequested();
 
 public slots:
     void doStuff();
+    void receiveData();
+    void onDisconnected();
+private slots:
+    void priv_go();
 };
 
 #endif // ECHOCLIENT_H

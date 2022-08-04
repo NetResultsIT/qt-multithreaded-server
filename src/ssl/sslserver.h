@@ -6,9 +6,7 @@
 #include <QSslKey>
 #include <QQueue>
 
-#include "mtcommon.h"
-
-#include "UniqLogger.h"
+class Logger;
 
 class NrServerConfig
 {
@@ -16,23 +14,23 @@ public:
     enum PortBindingPolicyType
     {
         E_BindToSpecificPort,   /*!< bind the server to a single, specific port: \a serverPort  */
-        E_BindUsingPortRange    /*!< bint the server to a port range: \a serverMinPort - \a serverMaxPort */
+        E_BindUsingPortRange    /*!< bind the server to a port range: \a serverMinPort - \a serverMaxPort */
     };
-    QHostAddress serverAddress; /*!< local server address to bind */
+    QHostAddress serverAddress; /*!< local server address to bind (defaults to QHostAddress::Any) */
     int serverPort;             /*!< server port used to listen for incoming connections when E_BindToSpecificPort has been specified */
-    int serverMinPort; /*!< min server port used to listen for incoming connections when \a E_BindUsingPortRange has been specified */
-    int serverMaxPort; /*!< max server port used to listen for incoming connections when \a E_BindUsingPortRange has been specified */
-    PortBindingPolicyType portBindingPolicy;    /*!< port binding policy */
-    QString keyfile;    /*!< full abs path to the keyfile to be used when encrypted connection is enabled */
-    QString certfile;   /*!< full abs path ceryificate to be used when encrypted connection is enabled */
-    QByteArray passphrase;  /*!< passphrase used to decrypt the certificate/key  when encrypted connection is enabled and the key has been pwd protected */
-    bool allowUntrustedCerts; /*!< UNUSED at the moment */
-    bool ignoreSslErrors;   /*!< if set to true ignore all ssl errors */
-    bool disableEncryption; /*!< true: use plaintext connections */
-    QString internalLoggerId;
-    QString logfile;
+    int serverMinPort;          /*!< min server port used to listen for incoming connections when \a E_BindUsingPortRange has been specified (default: 1025) */
+    int serverMaxPort;          /*!< max server port used to listen for incoming connections when \a E_BindUsingPortRange has been specified (default: 65535) */
+    PortBindingPolicyType portBindingPolicy; /*!< port binding policy (default to E_BindUsingPortRange) */
+    QString keyfile;            /*!< full abs path to the keyfile to be used when encrypted connection is enabled */
+    QString certfile;           /*!< full abs path ceryificate to be used when encrypted connection is enabled */
+    QByteArray passphrase;      /*!< passphrase used to decrypt the certificate/key  when encrypted connection is enabled and the key has been pwd protected */
+    bool allowUntrustedCerts;   /*!< UNUSED at the moment */
+    bool ignoreSslErrors;       /*!< if set to true ignore all ssl errors (default to false) */
+    bool disableEncryption;     /*!< true: use plaintext connections (default to false) */
+    //QString internalLoggerId;
+    //QString logfile;
 
-    WriterConfig logWriterConfig;
+    //WriterConfig logWriterConfig;
     int allowedInactivitySeconds;   /*!< If set to a positive no. (>0) this is the max no. of secs the connection can be
                                          inactive before it is closed */
     int allowedClientsHardLimit;    /*!< If set to a positive no. (>0) this is the max no. of client: any connection request exceeding the hard limit
@@ -41,18 +39,16 @@ public:
                                          the new conection will emit clientConnectionsExhausting() signal to notify the limit;*/
 
     explicit NrServerConfig()
-        : serverAddress(QHostAddress::Any),
-          serverPort(0),
-          serverMinPort(1025),
-          serverMaxPort(65535),
-          portBindingPolicy(E_BindUsingPortRange),
-          passphrase("netresults_testcert_privkey"),
-          disableEncryption(false),
-          internalLoggerId("NrTcpServer"),
-          logfile("sslsrv.log"),
-          allowedInactivitySeconds(0),
-          allowedClientsHardLimit(0),
-          allowedClientsSoftLimit(0) {}
+        : serverAddress(QHostAddress::Any)
+        , serverPort(0)
+        , serverMinPort(1025)
+        , serverMaxPort(65535)
+        , portBindingPolicy(E_BindUsingPortRange)
+        , passphrase("netresults_testcert_privkey")
+        , disableEncryption(false)
+        , allowedInactivitySeconds(0)
+        , allowedClientsHardLimit(0)
+        , allowedClientsSoftLimit(0) {}
 };
 
 
@@ -62,10 +58,10 @@ class SslServer : public QTcpServer
 
     NrServerConfig m_ServerConfig;
     QQueue<QSslSocket*> m_sslSocketQ;
-    Logger *m_flogger, *m_clogger;
+    Logger *m_pLogger;
 
 public:
-    explicit SslServer(const NrServerConfig &cfg, QObject *parent = nullptr);
+    explicit SslServer(const NrServerConfig &cfg, Logger *i_pLogger=nullptr, QObject *parent=nullptr);
     ~SslServer();
 
 #if QT_VERSION > 0x050000
