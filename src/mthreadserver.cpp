@@ -102,6 +102,8 @@ QMultiThreadedServer::onClientConnectionEncrypted()
         /*
          * we call the readyRead() signal to be sure that the associated call to
          * the slot handleClientData() has the sender() set, as this is used by the wo workers objects
+         * else we got a segfault
+         * https://github.com/NetResultsIT/qt-multithreaded-server/pull/8
          */
         QTimer::singleShot(0, wo, SIGNAL(readyRead()));
     }
