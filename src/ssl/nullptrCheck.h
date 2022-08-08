@@ -10,8 +10,8 @@
 
 
 #if defined(NO_CXX11_NULLPTR)
-#message("GCC does not support nullptr")
-#message("Redefine nullptr as NULL")
+#pragma message("GCC does not support nullptr")
+#pragma message("Redefine nullptr as NULL")
 #define nullptr NULL
 #endif
 
