@@ -1,6 +1,8 @@
 #ifndef SSLSERVER_H
 #define SSLSERVER_H
 
+#include "nullptrCheck.h"
+
 #include <QTcpServer>
 #include <QSslSocket>
 #include <QSslKey>
