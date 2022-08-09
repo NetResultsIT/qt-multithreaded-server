@@ -105,7 +105,7 @@ QMultiThreadedServer::onClientConnectionEncrypted()
          * else we got a segfault
          * https://github.com/NetResultsIT/qt-multithreaded-server/pull/8
          */
-        QTimer::singleShot(0, wo, SIGNAL(readyRead()));
+        QTimer::singleShot(0, sslsock, SIGNAL(readyRead()));
     }
 }
 
