@@ -10,6 +10,7 @@ QT += core network
 
 contains(QT, gui): message("WARNING: building MTServer with QT GUI enabled! Are you sure that's needed?")
 
+
 CONFIG += c++11
 
 contains(DEFINES, ENABLE_UNQL_USAGE_IN_MTSERVER) {
