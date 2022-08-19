@@ -1,4 +1,3 @@
-#include <QtGlobal>
-
+#include  <QtGlobal>
 #define nullptr Q_NULLPTR
 
