@@ -14,7 +14,9 @@
             "url": "https://nrreleases.jfrog.io/nrreleases/bblocks",
             "module": "libs/uniqlogger",
             "branch_or_tag": "release",
-            "version": "1.1.1",
+            "version": { 
+		    "linux64_Ubuntu_18.04": "1.1.1"
+	    },
             "unzip": "true"
         }
     ]
