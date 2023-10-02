@@ -15,7 +15,7 @@
             "module": "libs/uniqlogger",
             "branch_or_tag": "release",
             "version": { 
-		    "linux64_Ubuntu_18.04": "1.1.1"
+		    "default": "1.1.1"
 	    },
             "unzip": "true"
         }
