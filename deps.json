@@ -3,8 +3,9 @@
         {
             "name": "ThreadPool",
             "rel_dest_dir": "src/ext/tpool",
+	    "proto": "git",
             "url": "https://github.com/netresultsit/qt-threadpool",
-	    "version": "1.3"
+	    "branch_or_tag": "1.3"
         },
         {
             "name": "UniqLogger",
@@ -13,7 +14,7 @@
             "url": "https://nrreleases.jfrog.io/nrreleases/bblocks",
             "module": "libs/uniqlogger",
             "branch_or_tag": "release",
-            "version": "1.0.1",
+            "version": "1.1.1",
             "unzip": "true"
         }
     ]
