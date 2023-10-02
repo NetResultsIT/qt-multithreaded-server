@@ -6,18 +6,6 @@
 	    "proto": "git",
             "url": "https://github.com/netresultsit/qt-threadpool",
 	    "branch_or_tag": "1.3"
-        },
-        {
-            "name": "UniqLogger",
-            "rel_dest_dir": "deps/uniqlogger-bin",
-            "proto": "artifact",
-            "url": "https://nrreleases.jfrog.io/nrreleases/bblocks",
-            "module": "libs/uniqlogger",
-            "branch_or_tag": "release",
-            "version": { 
-		    "default": "1.1.1"
-	    },
-            "unzip": "true"
         }
     ]
 }
