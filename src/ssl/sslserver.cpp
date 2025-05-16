@@ -88,11 +88,7 @@ bool SslServer::listen(const QHostAddress &address, quint16 port)
   \brief we overload the virtual QTcpServer::incomingConnection(int) method in order to start the SSL Encryption
   */
 void
-#if QT_VERSION > 0x050000
-SslServer::incomingConnection(qintptr socketDescriptor)
-#else
-SslServer::incomingConnection(int socketDescriptor)
-#endif
+SslServer::incomingConnection(SocketDescriptorType socketDescriptor)
 {
     //MTSDBG << "############### server reports ssl socket on descriptor: " << socketDescriptor;
     QSslSocket *serverSocket = new QSslSocket;
@@ -113,14 +109,16 @@ SslServer::incomingConnection(int socketDescriptor)
         }
 
         qRegisterMetaType<QAbstractSocket::SocketError>("QAbstractSocket::SocketError");
-        connect(serverSocket, SIGNAL(error(QAbstractSocket::SocketError)), this, SLOT(onSocketError(QAbstractSocket::SocketError)));
+        // The following connection prints socket errors and state getting them from socket, ensure it will run on the socket thread
+        QObject::connect(serverSocket, SIGNAL(error(QAbstractSocket::SocketError)), this, SLOT(onSocketError(QAbstractSocket::SocketError)), Qt::DirectConnection);
 
         if (!m_ServerConfig.disableEncryption)
         {
 #if QT_VERSION < 0x050000
             qRegisterMetaType< QList<QSslError> >("QList<QSslError>");
 #endif
-            connect(serverSocket, SIGNAL(sslErrors(QList<QSslError>)), this, SLOT(onSslErrors(QList<QSslError>)));
+            // The following connection must be inline to permit ignnoring SSL errors
+            QObject::connect(serverSocket, SIGNAL(sslErrors(QList<QSslError>)), this, SLOT(onSslErrors(QList<QSslError>)), Qt::DirectConnection);
 
             SSLDBG << "Loading certfile / key pair: " << m_ServerConfig.certfile << "/" << m_ServerConfig.keyfile;
             serverSocket->setLocalCertificate(m_ServerConfig.certfile, QSsl::Pem);

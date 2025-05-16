@@ -65,10 +65,11 @@ public:
     ~SslServer();
 
 #if QT_VERSION > 0x050000
-    void incomingConnection(qintptr handle);
+    typedef qintptr SocketDescriptorType;
 #else
-    void incomingConnection(int handle);
+    typedef int SocketDescriptorType;
 #endif
+    virtual void incomingConnection(SocketDescriptorType socketDescriptor);
 
 #if QT_VERSION <= 0x040700
     QSslSocket* nextSslPendingConnection();
