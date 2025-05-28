@@ -193,7 +193,8 @@ void SslServer::onSocketError(QAbstractSocket::SocketError e)
     }
     else
     {
-        QString err = "Socket error event received but the socket is invalid (null)";
+        QString err = "Socket error %1 received but the socket is invalid (null)";
+        err = err.arg(QString::number(e));
         SSLLOG << UNQL::LOG_CRITICAL << err << UNQL::eom;
     }
 }
