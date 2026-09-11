@@ -113,7 +113,12 @@ SslServer::incomingConnection(int socketDescriptor)
         }
 
         qRegisterMetaType<QAbstractSocket::SocketError>("QAbstractSocket::SocketError");
+#if QT_VERSION >= QT_VERSION_CHECK(5, 15, 0)
+        connect(serverSocket, &QAbstractSocket::errorOccurred,
+                this, &SslServer::onSocketError);
+#else
         connect(serverSocket, SIGNAL(error(QAbstractSocket::SocketError)), this, SLOT(onSocketError(QAbstractSocket::SocketError)));
+#endif
 
         if (!m_ServerConfig.disableEncryption)
         {
@@ -207,7 +212,7 @@ void SslServer::onSslErrors(QList<QSslError> aErrorList)
     QList<QSslError> errorsToIgnore;
 
     foreach (QSslError se, aErrorList) {
-        if (se != QSslError::NoError) {
+        if (se.error() != QSslError::NoError) {
             SSLDBG << se.errorString();
             SSLLOG << UNQL::LOG_CRITICAL << "Server reports SSL error: " << se.errorString() << UNQL::eom;
             if (se.error() == QSslError::SelfSignedCertificate || se.error() == QSslError::SelfSignedCertificateInChain)
