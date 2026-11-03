@@ -12,7 +12,7 @@
             "url": "https://nrreleases.jfrog.io/nrreleases/bblocks",
             "module": "libs/uniqlogger",
             "branch_or_tag": "master",
-            "version": "1.1.1+",
+            "version": "1.3.0+",
             "unzip": "true"
         }
     ]
